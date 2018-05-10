@@ -6,17 +6,18 @@
 
 ``` bash
 # install dependencies
-npm install
+make sure you have installed the latest version of node and windows build tools:
+https://github.com/felixrieseberg/npm-windows-upgrade
+https://github.com/felixrieseberg/windows-build-tools
+also install yarn if you havent already
 
-# serve with hot reload at localhost:9080
-npm run dev
+# install dependencies
+yarn
 
-# build electron application for production
-npm run build
+# start the build
+yarn run dev
 
 
 ```
 
 ---
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[7c4e3e9](https://github.com/SimulatedGREG/electron-vue/tree/7c4e3e90a772bd4c27d2dd4790f61f09bae0fcef) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
