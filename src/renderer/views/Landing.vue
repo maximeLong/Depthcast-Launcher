@@ -8,7 +8,7 @@
       </div>
 
       <div class="app btn-group" :class="{ notavailable : !calibrated }">
-        <div class="launch-button" id="launch-app">Launch Depthcast</div>
+        <div class="launch-button" id="launch-app" @click="launchDepthcast">Launch Depthcast</div>
       </div>
     </div>
 
@@ -21,6 +21,8 @@
 
 <script>
   import OptionsPanel from '../components/OptionsPanel';
+
+  import { remote } from 'electron'
   const child = require('child_process').execFile;
   const fs = require('fs');
 
@@ -52,6 +54,10 @@
             console.log(data.toString())
           }
         });
+      },
+
+      launchDepthcast: function() {
+        //
       }
 
     },
@@ -61,7 +67,7 @@
         calibrateIsOpen: false,
         depthcastIsOpen: true,
         calibrateExecutablePath: "static\\zed_calibration\\Calibration.exe",
-        calibrateDataPath: "C:\\Users\\longm\\AppData\\Roaming\\Stereolabs\\steamvr\\Zed_Position_Offset.conf"
+        calibrateDataPath: remote.app.getPath("home") + "\\AppData\\Roaming\\Stereolabs\\steamvr\\Zed_Position_Offset.conf"
       }
     }
   }

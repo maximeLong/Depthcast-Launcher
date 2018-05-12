@@ -1,6 +1,6 @@
 var app = require('express')();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+export var io = require('socket.io')(http);
 
 export const serverSetup = (store)=> {
 
@@ -9,15 +9,18 @@ export const serverSetup = (store)=> {
     res.sendFile(__dirname + '/index.html');
   });
 
+  this.io = io;
+
   // messages have to have a keyword (ie - 'controllerfix', 'twitchchannel', 'roomscan')
   // messages need to have type:     1)ping 2)string 3)int 4)bool 5)object
   // messages have a value:
-  io.on('connection', function(socket){
+  this.io.on('connection', (socket)=> {
 
     //best http doesnt like to digest objects so keep everything in args
     //arg1 = keyword , arg2 = value
-    io.emit('toDepthcastString', 'greeting', 'hello Depthcast');
-    io.emit('toDepthcastPing', 'greetingPing')
+    this.io.emit('toDepthcastString', 'greeting', 'hello Depthcast');
+    this.io.emit('toDepthcastPing', 'greetingPing');
+
 
     //listen to messages from depthcast, parse and save
     socket.on('fromDepthcast', function(data) {

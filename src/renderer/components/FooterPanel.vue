@@ -1,9 +1,11 @@
 <template>
   <div id="footer-panel">
     <div class="fps">
-        <div class="title">Scene FPS: {{DepthcastFPS}}</div>
-        <div id="fps-info"></div>
-      </div>
+      <div class="title">Engine FPS: {{EngineFPS}}</div>
+    </div>
+    <div class="fps">
+      <div class="title">Camera FPS: {{CameraFPS}}</div>
+    </div>
   </div>
 </template>
 
@@ -14,7 +16,8 @@
     name: 'footerPanel',
     data () {
       return {
-        DepthcastFPS: undefined
+        EngineFPS: undefined,
+        CameraFPS: undefined
       }
     },
     methods: {},
