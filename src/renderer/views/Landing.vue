@@ -7,14 +7,16 @@
         <div class="launch-button" id="launch-calibrate" @click="launchCalibration">{{calibrated ? "Re-calibrate" : "Calibrate"}} Depth</div>
       </div>
 
-      <div class="app btn-group" :class="{ notavailable : !calibrated }">
+      <div class="app btn-group" :class="{ notavailable : !calibrated || depthcastIsOpen }">
         <div class="launch-button" id="launch-app" @click="launchDepthcast">Launch Depthcast</div>
       </div>
     </div>
 
-    <div class="panel" v-if="depthcastIsOpen">
-      <options-panel></options-panel>
-    </div>
+    <transition name="fadeup">
+      <div class="panel" v-if="depthcastIsOpen">
+        <options-panel></options-panel>
+      </div>
+    </transition>
 
   </div>
 </template>
@@ -25,6 +27,8 @@
   import { remote } from 'electron'
   const child = require('child_process').execFile;
   const fs = require('fs');
+  const path = require('path');
+  import {io} from '../store/plugins/serverSetup'
 
   export default {
     name: 'landing',
@@ -33,6 +37,9 @@
     },
     mounted: function() {
       this.checkCalibration();
+      io.on("connection", (socket)=> {
+        this.depthcastIsOpen = true;
+      })
     },
     computed: {},
     methods: {
@@ -47,17 +54,28 @@
         else { this.calibrated = false; }
       },
       launchCalibration: function() {
+        this.calibrateIsOpen = true;
         child(this.calibrateExecutablePath, (err, data)=> {
+          this.calibrateIsOpen = false;
           if(err) { console.error(err) }
           else {
-            this.calibrateIsOpen = true;
             console.log(data.toString())
           }
         });
       },
 
       launchDepthcast: function() {
-        //
+        if (!this.calibrated || this.depthcastIsOpen) {
+          return //mirror on css
+        } else {
+          child(this.depthcastExecutablePath, (err, data)=> {
+            this.depthcastIsOpen = false;
+            if(err) { console.error(err) }
+            else {
+              console.log(data.toString())
+            }
+          });
+        }
       }
 
     },
@@ -65,8 +83,9 @@
       return {
         calibrated: false,
         calibrateIsOpen: false,
-        depthcastIsOpen: true,
-        calibrateExecutablePath: "static\\zed_calibration\\Calibration.exe",
+        depthcastIsOpen: false,
+        calibrateExecutablePath: path.join(__static, 'zed_calibration/Calibration.exe'),
+        depthcastExecutablePath: path.join(__static, 'depthcast/depthcast.exe'),
         calibrateDataPath: remote.app.getPath("home") + "\\AppData\\Roaming\\Stereolabs\\steamvr\\Zed_Position_Offset.conf"
       }
     }

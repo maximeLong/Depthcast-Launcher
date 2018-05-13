@@ -2,6 +2,7 @@
   <div id="options-panel">
 
     <div class="good">
+      <div id="camera-btn" @click="sendPing('startCamera')">Start Zed</div>
       <div id="scan-btn" @click="sendPing('scanRoom')">Scan Room</div>
       <div class="twitch-input">
         <div class="title">Twitch:</div>
@@ -10,7 +11,7 @@
     </div>
 
     <div class="bad">
-      <div id="fix-btn" @click="sendPing('fixControllers')">Fix controllers</div>
+      <div id="fix-btn" @click="sendPing('fixControllers')">Calibrate Pads</div>
     </div>
   </div>
 </template>
@@ -61,12 +62,17 @@
   .good
     +flexbox
     +align-items(center)
-    #scan-btn
+    margin-right: 15px
+    #camera-btn
       height: 30px
       padding: 0 10px
       +button
+    #scan-btn
+      height: 30px
+      padding: 0 10px
+      margin: 0 10px
+      +button
     .twitch-input
-      margin-left: 15px
       +flexbox
       +align-items(center)
       input

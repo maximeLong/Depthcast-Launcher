@@ -1,8 +1,8 @@
 {
-  "name": "depthcast-native",
+  "name": "depthcast",
   "version": "0.0.0",
   "author": "maximeLong <long.maxime@gmail.com>",
-  "description": "Native launcher for Depthcast",
+  "description": "Augmented Broadcasts",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -17,8 +17,9 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "depthcast-native",
-    "appId": "org.simulatedgreg.electron-vue",
+    "productName": "depthcast",
+    "appId": "hotmax.depthcast",
+    "asar": false,
     "directories": {
       "output": "build"
     },
@@ -40,15 +41,10 @@
         }
       ]
     },
-    "mac": {
-      "icon": "build/icons/icon.icns"
-    },
     "win": {
-      "icon": "build/icons/icon.ico"
-    },
-    "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons/depthcast.ico"
     }
+
   },
   "dependencies": {
     "express": "^4.16.3",
