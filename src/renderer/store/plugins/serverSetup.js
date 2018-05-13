@@ -23,8 +23,8 @@ export const serverSetup = (store)=> {
 
 
     //listen to messages from depthcast, parse and save
-    socket.on('fromDepthcast', function(data) {
-      console.log(data);
+    socket.on('fromDepthcast', function(data, value) {
+      //could listen here if you wanted
     });
   });
 

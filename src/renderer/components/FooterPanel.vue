@@ -11,6 +11,7 @@
 
 <script>
   const storage = window.localStorage;
+  import {io} from '../store/plugins/serverSetup'
 
   export default {
     name: 'footerPanel',
@@ -19,6 +20,17 @@
         EngineFPS: undefined,
         CameraFPS: undefined
       }
+    },
+    mounted: function() {
+      //receive fps data
+      io.on("connection", (socket)=> {
+        console.log('connection')
+        socket.on('fromDepthcast', (data, value)=> {
+          if (data == 'cameraFPS') { this.CameraFPS = value }
+          if (data == 'engineFPS') { this.EngineFPS = value }
+        });
+      })
+
     },
     methods: {},
     computed: {}
