@@ -1,10 +1,10 @@
 <template>
   <div id="footer-panel">
     <div class="fps">
-      <div class="title">Engine FPS: {{EngineFPS}}</div>
+      <div class="title">Engine: {{EngineFPS}}</div>
     </div>
     <div class="fps">
-      <div class="title">Camera FPS: {{CameraFPS}}</div>
+      <div class="title">Camera: {{CameraFPS}}</div>
     </div>
   </div>
 </template>
