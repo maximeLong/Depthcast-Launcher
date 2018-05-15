@@ -5,8 +5,8 @@
       <div class="name">Depthcast - Version: 0.0.1</div>
     </div>
     <div class="controls">
-      <div id="minimize"></div>
-      <div id="close">
+      <div id="minimize" @click="minimizeApp"></div>
+      <div id="close" @click="closeApp">
         <i class="material-icons">close</i>
       </div>
     </div>
@@ -14,10 +14,20 @@
 </template>
 
 <script>
+const { remote } = require('electron')
+
   export default {
     name: 'headerPanel',
     data () {
       return {}
+    },
+    methods: {
+      closeApp: function() {
+        remote.BrowserWindow.getFocusedWindow().close();
+      },
+      minimizeApp: function() {
+        remote.BrowserWindow.getFocusedWindow().minimize();
+      }
     }
   }
 </script>

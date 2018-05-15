@@ -3,7 +3,10 @@
 
     <div class="good">
       <div id="camera-btn" @click="sendPing('startCamera')">Start Zed</div>
-      <div id="scan-btn" @click="sendPing('scanRoom')">Scan Room</div>
+
+      <div v-if="canScan" id="scan-btn" @click="sendPing('scanRoom')">{{scanning ? 'Stop Scanning' : 'Scan Room'}}</div>
+      <div v-else id="scan-btn" class="done">done scanning</div>
+
       <div class="twitch-input">
         <div class="title">Twitch:</div>
         <input id="twitch-info" placeholder="channel name" :value="twitchInfo" @input="updateTwitchInfo">
@@ -11,7 +14,7 @@
     </div>
 
     <div class="bad">
-      <div id="fix-btn" @click="sendPing('fixControllers')">Calibrate Pads</div>
+      <div id="fix-btn" @click="sendPing('fixControllers')">Re-calibrate Pads</div>
     </div>
   </div>
 </template>
@@ -23,12 +26,27 @@
   export default {
     name: 'optionsPanel',
     data () {
-      return {}
+      return {
+        scanning: false,
+        canScan: false
+      }
     },
     mounted: function() {
-      //send twitch info on socket connection
+      //send twitch info on socket connection, set up scanning logic
       io.on("connection", (socket)=> {
+        this.canScan = true;
         this.sendString('twitchChannel', storage.getItem("twitch"))
+        socket.on('fromDepthcast', (data, value)=> {
+          if (data == 'scanRoom') {
+            console.log(data, value)
+            if (value == 'scanningStarted') {
+              this.scanning = true
+            } else {
+              this.scanning = false
+              this.canScan = false
+            }
+          }
+        });
       })
     },
     methods: {
@@ -72,6 +90,9 @@
       padding: 0 10px
       margin: 0 10px
       +button
+      &.done
+        opacity: .5
+        cursor: default
     .twitch-input
       +flexbox
       +align-items(center)
@@ -88,7 +109,6 @@
       +button
       height: 30px
       padding: 0 10px
-      opacity: .5
 
 
 </style>
