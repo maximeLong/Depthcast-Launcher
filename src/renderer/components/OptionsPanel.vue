@@ -38,16 +38,16 @@
 
         //handle the scanning UI
         this.alreadyScanned = false //reset for editor
-        socket.on('fromDepthcast', (data, value)=> {
-          if (data == 'scanRoom') {
-            if (value == 'scanningStarted') {
-              this.scanning = true
-              if (!this.alreadyScanned) { this.alreadyScanned = true }
-            } else {
-              this.scanning = false
-            }
-          }
-        });
+        // socket.on('fromDepthcast', (data, value)=> {
+        //   if (data == 'scanRoom') {
+        //     if (value == 'scanningStarted') {
+        //       this.scanning = true
+        //       if (!this.alreadyScanned) { this.alreadyScanned = true }
+        //     } else {
+        //       this.scanning = false
+        //     }
+        //   }
+        // });
       })
     },
     methods: {
@@ -60,6 +60,13 @@
       },
       sendPing: function(keyword) {
         io.emit('toDepthcastPing', keyword);
+        //TODO: hack -- fix for real
+        if (!this.scanning) {
+          this.scanning = true
+          if (!this.alreadyScanned) {this.alreadyScanned = true}
+        } else {
+          this.scanning = false
+        }
       }
     },
     computed: {
