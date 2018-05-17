@@ -18,6 +18,14 @@ yarn
 yarn run dev
 
 
+# to build
+put depthcast build data in 'depthcast' folder under static
+put calibration data in 'zed_calibration' folder under static
+
+under PlayerSettings change name to  `Depthcast` & Build .. drop contents into 'depthcast' folder in static
+
+at root, run 'npm run build'
+build data will be in 'build' folder
 ```
 
 ---

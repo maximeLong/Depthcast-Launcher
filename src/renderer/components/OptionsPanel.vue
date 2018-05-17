@@ -4,8 +4,8 @@
     <div class="good">
       <div id="camera-btn" @click="sendPing('startCamera')">Start Zed</div>
 
-      <div v-if="canScan" id="scan-btn" @click="sendPing('scanRoom')">{{scanning ? 'Stop Scanning' : 'Scan Room'}}</div>
-      <div v-else id="scan-btn" class="done">done scanning</div>
+      <div v-if="!alreadyScanned" id="scan-btn" @click="sendPing('scanRoom')">{{scanning ? 'Stop Scanning' : 'Scan Room'}}</div>
+      <div v-else id="scan-btn" @click="sendPing('scanRoom')">{{scanning ? 'Stop Scanning' : 'Re-Scan Room'}}</div>
 
       <div class="twitch-input">
         <div class="title">Twitch:</div>
@@ -28,22 +28,23 @@
     data () {
       return {
         scanning: false,
-        canScan: false
+        alreadyScanned: false
       }
     },
     mounted: function() {
       //send twitch info on socket connection, set up scanning logic
       io.on("connection", (socket)=> {
-        this.canScan = true;
         this.sendString('twitchChannel', storage.getItem("twitch"))
+
+        //handle the scanning UI
+        this.alreadyScanned = false //reset for editor
         socket.on('fromDepthcast', (data, value)=> {
           if (data == 'scanRoom') {
-            console.log(data, value)
             if (value == 'scanningStarted') {
               this.scanning = true
+              if (!this.alreadyScanned) { this.alreadyScanned = true }
             } else {
               this.scanning = false
-              this.canScan = false
             }
           }
         });
@@ -54,7 +55,6 @@
         storage.setItem('twitch', e.target.value);
         this.sendString('twitchChannel', e.target.value)
       },
-
       sendString: function(keyword, string) {
         io.emit('toDepthcastString', keyword, string);
       },
