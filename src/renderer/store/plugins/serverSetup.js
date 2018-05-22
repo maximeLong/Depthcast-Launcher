@@ -16,15 +16,31 @@ export const serverSetup = (store)=> {
   // messages have a value:
   this.io.on('connection', (socket)=> {
 
+    //HACK: this should be handled through the store/options handoff
+    io.emit('toDepthcastString', 'twitchChannel', window.localStorage.getItem("twitch"));
+    store.commit('SET_ALREADY_SCANNED', false);
+
     //best http doesnt like to digest objects so keep everything in args
     //arg1 = keyword , arg2 = value
-    this.io.emit('toDepthcastString', 'greeting', 'hello Depthcast');
+    this.io.emit('toDepthcastString', 'greeting', 'hello from store');
     this.io.emit('toDepthcastPing', 'greetingPing');
 
 
     //listen to messages from depthcast, parse and save
     socket.on('fromDepthcast', function(data, value) {
-      //could listen here if you wanted
+
+      //HACK: this should be handled in components somehow, but individual io listeners break
+      if (data == 'scanRoom') {
+        if (value == 'scanningStarted') {
+          store.commit('SET_CURRENTLY_SCANNING', true)
+          if (!store.state.UnitySockets.alreadyScanned) { store.commit('SET_ALREADY_SCANNED', true) }
+        } else {
+          store.commit('SET_CURRENTLY_SCANNING', false)
+        }
+      }
+      if (data == 'cameraFPS') {store.commit('SET_CAMERA_FPS', value) }
+      if (data == 'engineFPS') {store.commit('SET_ENGINE_FPS', value) }
+
     });
   });
 

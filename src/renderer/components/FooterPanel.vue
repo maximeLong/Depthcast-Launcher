@@ -1,10 +1,10 @@
 <template>
   <div id="footer-panel">
     <div class="fps">
-      <div class="title">Engine: {{EngineFPS}}</div>
+      <div class="title">Engine: {{engineFPS}}</div>
     </div>
     <div class="fps">
-      <div class="title">Camera: {{CameraFPS}}</div>
+      <div class="title">Camera: {{cameraFPS}}</div>
     </div>
   </div>
 </template>
@@ -16,24 +16,14 @@
   export default {
     name: 'footerPanel',
     data () {
-      return {
-        EngineFPS: undefined,
-        CameraFPS: undefined
-      }
+      return {}
     },
-    mounted: function() {
-      //receive fps data
-      io.on("connection", (socket)=> {
-        console.log('connection')
-        socket.on('fromDepthcast', (data, value)=> {
-          if (data == 'cameraFPS') { this.CameraFPS = value }
-          if (data == 'engineFPS') { this.EngineFPS = value }
-        });
-      })
-
-    },
+    mounted: function() {},
     methods: {},
-    computed: {}
+    computed: {
+      engineFPS: function() {return this.$store.state.UnitySockets.engineFPS },
+      cameraFPS: function() {return this.$store.state.UnitySockets.cameraFPS }
+    }
   }
 </script>
 

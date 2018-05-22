@@ -21,34 +21,16 @@
 
 <script>
   const storage = window.localStorage;
-  import {io} from '../store/plugins/serverSetup'
+  import { io } from '../store/plugins/serverSetup'
+  import { mapState } from 'vuex'
 
   export default {
     name: 'optionsPanel',
     data () {
-      return {
-        scanning: false,
-        alreadyScanned: false
-      }
+      return {}
     },
     mounted: function() {
-      //send twitch info on socket connection, set up scanning logic
-      io.on("connection", (socket)=> {
-        this.sendString('twitchChannel', storage.getItem("twitch"))
 
-        //handle the scanning UI
-        this.alreadyScanned = false //reset for editor
-        // socket.on('fromDepthcast', (data, value)=> {
-        //   if (data == 'scanRoom') {
-        //     if (value == 'scanningStarted') {
-        //       this.scanning = true
-        //       if (!this.alreadyScanned) { this.alreadyScanned = true }
-        //     } else {
-        //       this.scanning = false
-        //     }
-        //   }
-        // });
-      })
     },
     methods: {
       updateTwitchInfo: function(e) {
@@ -60,19 +42,12 @@
       },
       sendPing: function(keyword) {
         io.emit('toDepthcastPing', keyword);
-        //TODO: hack -- fix for real
-        if (!this.scanning) {
-          this.scanning = true
-          if (!this.alreadyScanned) {this.alreadyScanned = true}
-        } else {
-          this.scanning = false
-        }
       }
     },
     computed: {
-      twitchInfo: function() {
-        return storage.getItem("twitch");
-      }
+      twitchInfo: function() { return storage.getItem("twitch") },
+      scanning: function() { return this.$store.state.UnitySockets.currentlyScanning },
+      alreadyScanned: function() { return this.$store.state.UnitySockets.alreadyScanned }
     }
   }
 </script>
