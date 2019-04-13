@@ -1,6 +1,6 @@
-# depthcast-native
+# depthcast-launcher
 
-> Native launcher for Depthcast
+> Windows launcher for Depthcast
 
 #### Build Setup
 

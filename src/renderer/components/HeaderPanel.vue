@@ -1,8 +1,7 @@
 <template>
   <div id="header-panel">
-    <div class="title">
-      <div class="logo"></div>
-      <div class="name">Depthcast - Version: 0.0.1</div>
+    <div class="member-name">
+      <div class="greeting">hi {{member}}</div>
     </div>
     <div class="controls">
       <div id="minimize" @click="minimizeApp"></div>
@@ -19,7 +18,9 @@ const { remote } = require('electron')
   export default {
     name: 'headerPanel',
     data () {
-      return {}
+      return {
+        member: 'Maxime'
+      }
     },
     methods: {
       closeApp: function() {
@@ -37,44 +38,37 @@ const { remote } = require('electron')
 
 #header-panel
   -webkit-app-region: drag
-  color: white
-  border-bottom: 4px solid $action_color
-  font-size: 10px
+  border-bottom: 2px solid $border_color
+  height: 100%
+  padding: 0 15px
+  +flex-direction(row)
+  +align-items(center)
+  +justify-content(flex-end)
+  +flexbox
 
-  .title
-    +flexbox
-    +align-items(center)
-    height: 100%
-    .logo
-      margin-right: 10px
-      width: 25px
-      height: 25px
-      background-size: contain
-      background-position: 50% 50%
-      background-repeat: no-repeat
-      background-image: url('../assets/logo-thumb.png')
+  .member-name
+    margin-right: 30px
 
   .controls
     +flexbox
     -webkit-app-region: no-drag
-
     #minimize
-      width: 15px
-      height: 15px
-      border-bottom: 3px solid #919191
+      width: 20px
+      height: 20px
+      border-bottom: 3px solid $text_color_grey
       +clickable
       margin-right: 10px
     #close
-      width: 15px
-      height: 15px
-      background-color: #919191
+      width: 20px
+      height: 20px
+      background-color: $text_color_grey
       border-radius: 2px
       +clickable
       +flexbox
       +align-items(center)
       +justify-content(center)
       font-size: 10px
-      color: #1d1d1d
-      font-weight: bold
+      color: black
+      font-weight: 700
 
 </style>

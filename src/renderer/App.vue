@@ -1,26 +1,31 @@
 <template>
   <div id="app">
 
-    <header-panel></header-panel>
-
-    <div id="app-content">
-      <router-view></router-view>
+    <div id="side-panel-container">
+      <side-panel></side-panel>
     </div>
 
-    <footer-panel></footer-panel>
+    <div id="content-container">
+      <div id="header-panel-container">
+        <header-panel></header-panel>
+      </div>
+      <div id="view-container">
+        <router-view></router-view>
+      </div>
+    </div>
 
   </div>
 </template>
 
 <script>
-  import HeaderPanel from './components/HeaderPanel';
-  import FooterPanel from './components/FooterPanel'
+  import HeaderPanel  from './components/HeaderPanel';
+  import SidePanel    from './components/SidePanel';
 
   export default {
     name: 'depthcast-native',
     components: {
       HeaderPanel,
-      FooterPanel
+      SidePanel
     }
   }
 </script>

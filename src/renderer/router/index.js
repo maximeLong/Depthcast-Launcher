@@ -8,7 +8,12 @@ export default new Router({
     {
       path: '/',
       name: 'landing',
-      component: require('@/views/Landing').default
+      component: require('@/views/Discord').default
+    },
+    {
+      path: '/discord',
+      name: 'landing',
+      component: require('@/views/Discord').default
     },
     {
       path: '*',
