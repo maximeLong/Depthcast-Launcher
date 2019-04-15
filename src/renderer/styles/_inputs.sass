@@ -1,23 +1,28 @@
 //-- form input
-//
 input
   border: none
-  font-size: 12px
+  +normalText
+  width: 100%
   border-bottom: 1px solid $action_color
+  padding-bottom: 5px
+
   background-color: transparent
   color: white
   outline: 0
+  &::placeholder
+    font-style: italic
   &:focus
     border-bottom: 1px solid white
 
-//-- button builder... so many variations
-//
+//-- button builder
 =button
   outline: 0
   +clickable
-  background-color: white
-  color: #1d1d1d
-  border-radius: 3px
+  background-color: $action_color
+  +normalText
+  color: black
+  border-radius: 2px
+  padding: 12px 0
   +flexbox
   +justify-content(center)
   +align-items(center)

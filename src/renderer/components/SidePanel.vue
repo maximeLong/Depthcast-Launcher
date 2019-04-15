@@ -6,30 +6,43 @@
       <div class="button">Depthcast</div>
     </div>
 
+
     <div class="additional-panel">
-      <div class="panel">
-        <div class="icon update"></div>
-        <div class="button">Updates</div>
-      </div>
-      <div class="panel">
-        <div class="icon discord"></div>
-        <div class="button">Discord channel</div>
-      </div>
+      <router-link to="/" :disabled="needsInstallation">
+        <div class="panel" :class="{ 'disabled' : needsInstallation }">
+          <div class="icon home"></div>
+          <div class="button">Home</div>
+        </div>
+      </router-link>
+      <router-link to="/update">
+        <div class="panel">
+          <div class="icon update"></div>
+          <div class="button">Updates</div>
+        </div>
+      </router-link>
+      <router-link to="/discord">
+        <div class="panel">
+          <div class="icon discord"></div>
+          <div class="button">In-app chat</div>
+        </div>
+      </router-link>
     </div>
 
   </div>
 </template>
 
 <script>
-const { remote } = require('electron')
+const   { remote }    = require('electron')
+import  { mapState }  from 'vuex'
+
 export default {
   name: 'sidePanel',
   data () {
     return {}
   },
-  methods: {
-
-  }
+  computed: mapState({
+    needsInstallation: state => state.FileSystem.needsInstallation
+  })
 }
 </script>
 
@@ -61,9 +74,18 @@ export default {
         background-image: url('../assets/discord.svg')
       &.update
         background-image: url('../assets/update.svg')
+      &.home
+        background-image: url('../assets/home.svg')
     .button
       +clickable
       margin-left: 10px
+
+    &.disabled
+      .icon
+        opacity: .35
+      .button
+        opacity: .5
+        cursor: default
 
 
   .logo-bar
@@ -78,8 +100,16 @@ export default {
       letter-spacing: .75px
   .additional-panel
     margin-bottom: 20px
-    .panel:nth-of-type(1)
+    a
+      color: $text_color_grey
+      &.router-link-exact-active
+        color: $action_color
+      &[disabled]
+        cursor: default
+    .panel
       margin-bottom: 8px
+    .panel:last-of-type
+      margin-bottom: 0
 
 
 </style>

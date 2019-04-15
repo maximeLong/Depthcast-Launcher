@@ -1,15 +1,15 @@
 <template>
   <div id="landing">
     <div class="button-container">
-      <div class="button-image main"></div>
+      <div class="button-image main"><div class="icon"></div></div>
       <div class="text">Depthcast Designer</div>
     </div>
     <div class="button-container">
-      <div class="button-image model"></div>
+      <div class="button-image model"><div class="icon"></div></div>
       <div class="text">Model Importer</div>
     </div>
     <div class="button-container">
-      <div class="button-image vfx"></div>
+      <div class="button-image vfx"><div class="drop">Drop .assetbundle files</div></div>
       <div class="text">Unity VFX Importer</div>
     </div>
   </div>
@@ -17,37 +17,17 @@
 
 <script>
 import { remote } from 'electron'
-const child = require('child_process').execFile;
-const fs    = require('fs');
-const path  = require('path');
 
 export default {
   name: 'landing',
-  data() {
-    return {
-      importerIsOpen: false,
-      depthcastIsOpen: false,
-      calibrateExecutablePath: path.join(__static, 'zed_calibration/Calibration.exe'),
-      depthcastExecutablePath: remote.app.getPath('Desktop') + "\\Depthcast\\Depthcast.exe"
-    }
+  mounted: function() {
+    remote.getCurrentWindow().setMinimumSize(1000, 570);
+    remote.getCurrentWindow().setContentSize(1000, 570);
   },
-  methods: {
-    launchImporter: function() {
-      this.importerIsOpen = true;
-      child(this.calibrateExecutablePath, (err, data)=> {
-        this.importerIsOpen = false;
-        err ? console.log(err) : console.log(data.toString());
-      });
-    },
-
-    launchDepthcast: function() {
-      var exePath = remote.app.getPath('desktop') + "\\Depthcast\\Depthcast.exe";
-      child(exePath, (err, data)=> {
-        this.depthcastIsOpen = false;
-        err ? console.log(err) : console.log(data.toString());
-      });
-    }
-  }
+  data() {
+    return {}
+  },
+  methods: {}
 
 }
 </script>
@@ -74,7 +54,28 @@ export default {
       width: 100%
       height: 150px
       background: $background_gradient
+      +flexbox
+      +align-items(center)
+      +justify-content(center)
       +clickable
+      &.main
+        .icon
+          background-image: url('../assets/logo.svg')
+      &.model
+        .icon
+          background-image: url('../assets/logo.svg')
+      &.vfx
+        background: none
+        border: 2px dashed $text_color_grey
+        .drop
+          padding: 0 20px
+      .icon
+        width: 80%
+        height: 80%
+        background-size: contain
+        background-position: 50% 50%
+        background-repeat: no-repeat
+
     .text
       +largeText
       padding: 15px 0 0 10px

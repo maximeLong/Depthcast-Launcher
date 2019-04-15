@@ -12,6 +12,10 @@ export default {
   data() {
     return {}
   },
+  mounted: function() {
+    remote.getCurrentWindow().setMinimumSize(1300, 750);
+    remote.getCurrentWindow().setContentSize(1300, 750);
+  },
   methods: {}
 
 }
