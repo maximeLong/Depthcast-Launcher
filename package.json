@@ -1,8 +1,8 @@
 {
-  "name": "depthcast",
-  "version": "0.0.0",
-  "author": "maximeLong <long.maxime@gmail.com>",
-  "description": "Launcher and meta app for Depthcast",
+  "name": "Depthcast",
+  "version": "1.0.1",
+  "author": "Maxime Long <long.maxime@gmail.com>",
+  "description": "Launcher and meta handler for Depthcast",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "depthcast",
+    "productName": "Depthcast",
     "appId": "hotmax.depthcast",
     "asar": false,
     "directories": {
@@ -42,7 +42,7 @@
       ]
     },
     "win": {
-      "icon": "build/icons/depthcast.ico"
+      "icon": "build/icons/Depthcast-Logo.ico"
     }
   },
   "dependencies": {

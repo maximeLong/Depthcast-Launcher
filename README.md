@@ -1,31 +1,21 @@
-# depthcast-launcher
+# Depthcast-Launcher
 
-> Windows launcher for Depthcast
+> Electron launcher and exe manager for Depthcast
 
-#### Build Setup
+## Instructions
 
 ``` bash
 # install dependencies
 make sure you have installed the latest version of node and windows build tools:
 https://github.com/felixrieseberg/npm-windows-upgrade
 https://github.com/felixrieseberg/windows-build-tools
-also install yarn if you havent already
+also install yarn if you have not already
 
 # install dependencies
 yarn
-
-# start the build
+# start dev project
 yarn run dev
+# build
+yarn run build
 
-
-# to build
-put depthcast build data in 'depthcast' folder under static
-put calibration data in 'zed_calibration' folder under static
-
-under PlayerSettings change name to  `Depthcast` & Build .. drop contents into 'depthcast' folder in static
-
-at root, run 'npm run build'
-build data will be in 'build' folder
 ```
-
----
