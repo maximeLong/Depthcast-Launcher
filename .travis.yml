@@ -33,14 +33,15 @@ script:
 before_deploy:
   - git config --local user.name "Maxime Long"
   - git config --local user.email "long.maxime@gmail.com"
-  - git tag "1.0.1"
+  - git tag "v1.0.1"
 
 deploy:
   provider: releases
+  on:
+    tags: true
+  draft: true
   api_key: "$GH_TOKEN"
-  name: "1.0.1"
+  name: "v1.0.1"
   file:
     - "build/Depthcast-Setup-*.exe"
   skip_cleanup: true
-  on:
-    branch: master
