@@ -29,19 +29,6 @@ install:
 - yarn
 script:
 - yarn run build
-
-before_deploy:
-  - git config --local user.name "Maxime Long"
-  - git config --local user.email "long.maxime@gmail.com"
-  - git tag "v1.0.1"
-
-deploy:
-  provider: releases
-  on:
-    tags: true
-  draft: true
-  api_key: "$GH_TOKEN"
-  name: "v1.0.1"
-  file:
-    - "build/Depthcast-Setup-*.exe"
-  skip_cleanup: true
+branches:
+  only:
+  - master
