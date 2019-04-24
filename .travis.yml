@@ -1,10 +1,8 @@
-osx_image: xcode8.3
 sudo: required
 dist: trusty
 language: c
 matrix:
   include:
-  - os: osx
   - os: linux
     env: CC=clang CXX=clang++ npm_config_clang=1
     compiler: clang
@@ -31,6 +29,18 @@ install:
 - yarn
 script:
 - yarn run build
-branches:
-  only:
-  - master
+
+before_deploy:
+  - git config --local user.name "Maxime Long"
+  - git config --local user.email "long.maxime@gmail.com"
+  - git tag "1.0.1"
+
+deploy:
+  provider: releases
+  api_key: "$GH_TOKEN"
+  name: "1.0.1"
+  file:
+    - "build/Depthcast-Setup-*.exe"
+  skip_cleanup: true
+  on:
+    branch: master
