@@ -9,13 +9,15 @@
         <div class="subtitle">It looks like Depthcast's executables haven't been created yet. Let's install them.</div>
       </div>
       <div class="install-form" v-if="!showLoading">
-        <div class="subtitle">Enter your product serial key:</div>
-        <input class="serial-key" placeholder="Your serial key">
+        <div class="subtitle">Enter the key you received in your welcome email:</div>
+        <!-- <input :value="formEmail" @input="updateFormEmail" class="serial-key" placeholder="Your Email"> -->
+        <input :value="formKey" @input="updateFormKey" class="serial-key" placeholder="Your serial key">
         <div class="submit-button" @click="submitForInstallation">Submit Key</div>
+        <div class="error" v-if="downloadError">Error: {{downloadError}}</div>
       </div>
 
       <div class="loading" v-if="showLoading">
-        <div class="subtitle">Please wait while your files are being prepared...</div>
+        <div class="subtitle">{{downloadStatus}}</div>
         <scale-loader :loading="needsInstallation" :color="'#c3c3c3'"></scale-loader>
       </div>
     </div>
@@ -50,15 +52,27 @@ export default {
     ScaleLoader
   },
   computed: mapState({
-    needsInstallation: state => state.FileSystem.needsInstallation
+    needsInstallation:  state => state.FileSystem.needsInstallation,
+    formEmail:          state => state.FileSystem.formEmail,
+    formKey:            state => state.FileSystem.formKey,
+    downloadStatus:     state => state.FileSystem.downloadStatus,
+    downloadError:      state => state.FileSystem.downloadError,
   }),
   methods: {
     submitForInstallation() {
       this.showLoading = true;
       this.getExeAndUnpack().then(()=> {
-        this.showLoading = true;
-
-      });
+        this.showLoading  = false;
+        this.$store.commit('SET_NEEDS_INSTALLATION', false);
+      }).catch((err)=> {
+        this.showLoading = false;
+      })
+    },
+    updateFormEmail(e) {
+      this.$store.commit('UPDATE_FORM_EMAIL', e.target.value);
+    },
+    updateFormKey(e) {
+      this.$store.commit('UPDATE_FORM_KEY', e.target.value);
     },
     ...mapActions([
       'getExeAndUnpack'
@@ -89,10 +103,13 @@ export default {
     .install-form
       +flex(1)
       margin-left: 50px
-      .subtitle,input
+      .subtitle,input,.submit-button
         margin-bottom: 10px
       .submit-button
         +button
+      .error
+        color: $action_color
+
     .loading
       width: 100%
       height: 100%

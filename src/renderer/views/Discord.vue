@@ -1,6 +1,6 @@
 <template>
   <div id="discord">
-    <webview src="https://discord.gg/Bfe6yr" class="view"></webview>
+    <webview src="https://discord.gg/G9Ykhmu" class="view"></webview>
   </div>
 </template>
 

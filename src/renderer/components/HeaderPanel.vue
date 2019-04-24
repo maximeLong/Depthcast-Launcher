@@ -1,7 +1,7 @@
 <template>
   <div id="header-panel">
     <div class="member-name">
-      <div class="greeting">hi {{member}}</div>
+      <div class="greeting">{{name ? 'hi, ' + name : ''}}</div>
     </div>
     <div class="controls">
       <div id="minimize" @click="minimizeApp"></div>
@@ -14,14 +14,16 @@
 
 <script>
 const { remote } = require('electron')
+import { mapState } from 'vuex'
 
   export default {
     name: 'headerPanel',
     data () {
-      return {
-        member: 'Maxime'
-      }
+      return {}
     },
+    computed: mapState({
+      name:  state => state.FileSystem.userName.split(' ')[0]
+    }),
     methods: {
       closeApp: function() {
         remote.BrowserWindow.getFocusedWindow().close();

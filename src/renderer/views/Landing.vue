@@ -1,10 +1,10 @@
 <template>
   <div id="landing">
-    <div class="button-container">
+    <div class="button-container" @click="launchDepthcast">
       <div class="button-image main"><div class="icon"></div></div>
       <div class="text">Depthcast Designer</div>
     </div>
-    <div class="button-container">
+    <div class="button-container" @click="launchImporter">
       <div class="button-image model"><div class="icon"></div></div>
       <div class="text">Model Importer</div>
     </div>
@@ -17,6 +17,7 @@
 
 <script>
 import { remote } from 'electron'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'landing',
@@ -27,7 +28,12 @@ export default {
   data() {
     return {}
   },
-  methods: {}
+  methods: {
+    ...mapActions([
+      'launchDepthcast',
+      'launchImporter'
+    ])
+  }
 
 }
 </script>
@@ -60,10 +66,10 @@ export default {
       +clickable
       &.main
         .icon
-          background-image: url('../assets/logo.svg')
+          background-image: url('../assets/Logo_Front.png')
       &.model
         .icon
-          background-image: url('../assets/logo.svg')
+          background-image: url('../assets/Model_Front.png')
       &.vfx
         background: none
         border: 2px dashed $text_color_grey

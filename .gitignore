@@ -2,9 +2,6 @@
 dist/electron/*
 dist/web/*
 
-static/zed_calibration
-static/depthcast
-
 build/*
 !build/icons
 node_modules/
