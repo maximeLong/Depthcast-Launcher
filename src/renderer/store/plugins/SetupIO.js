@@ -4,13 +4,9 @@ var mkdirp    = require('mkdirp');
 const homeDir = require('os').homedir();
 
 
-const setupPaths = store => {
+const setupIO = store => {
 
-  //rewrite the userData path + make it if it doesnt exist
-  remote.app.setPath('userData', homeDir + '\\AppData\\Local\\Depthcast');
-  mkdirp(remote.app.getPath('userData'), function (err) {
-    err ? console.error(err) : console.log('made dir');
-  });
+  //set the executable paths >> if this causes errors we can move this into installation flow
   store.commit('SET_DEPTHCAST_PATH', remote.app.getPath('userData') + "\\Depthcast\\Depthcast.exe")
   store.commit('SET_IMPORTER_PATH', remote.app.getPath('userData') + "\\Depthcast\\Depthcast.exe")
 
@@ -26,9 +22,17 @@ const setupPaths = store => {
 
   //check if we have localStorage items
   store.commit('UPDATE_FORM_KEY',   localStorage.getItem('key'));
-  store.commit('UPDATE_USER_EMAIL', localStorage.getItem('email'));
   store.commit('UPDATE_USER_NAME',  localStorage.getItem('name'));
 
+  //set version -- if dev set from package json
+  if (process.env.NODE_ENV == 'development') {
+    store.commit('SET_LAUNCHER_VERSION', require('../../../../package.json').version);
+  } else {
+    store.commit('SET_LAUNCHER_VERSION', remote.app.getVersion());
+  }
+
+  //check for updates >> might also want to move this into installation callback
+  store.dispatch('checkForUpdates');
 }
 
-export default setupPaths;
+export default setupIO;

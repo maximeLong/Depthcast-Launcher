@@ -1,4 +1,5 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
+const {download} = require('electron-dl');
 
 /**
  * Set `__static` path to static files in production
@@ -46,6 +47,13 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+//electron-dl downloader
+ipcMain.on('download-object', async (event, {url}) => {
+  const win = BrowserWindow.getFocusedWindow();
+  await download(win, url, {openFolderWhenDone: true});
+  event.sender.send('download-success', url)
+});
 
 /**
  * Auto Updater

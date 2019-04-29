@@ -22,7 +22,10 @@ import { mapState } from 'vuex'
       return {}
     },
     computed: mapState({
-      name:  state => state.FileSystem.userName.split(' ')[0]
+      name:  state => {
+        const maybeName = state.Executables.userName;
+        return maybeName ? maybeName.split(' ')[0] : '';
+      }
     }),
     methods: {
       closeApp: function() {

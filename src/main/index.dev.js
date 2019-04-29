@@ -15,6 +15,9 @@ require('electron-debug')({ showDevTools: true })
 
 // Install `vue-devtools`
 require('electron').app.on('ready', () => {
+  //reset path because dev env points to "Electron"
+  require('electron').app.setPath('userData', require('os').homedir() + '\\AppData\\Roaming\\Depthcast');
+
   let installExtension = require('electron-devtools-installer')
   installExtension.default(installExtension.VUEJS_DEVTOOLS)
     .then(() => {})

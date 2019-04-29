@@ -18,6 +18,7 @@
         <div class="panel">
           <div class="icon update"></div>
           <div class="button">Updates</div>
+          <div class="notification" v-if="needsUpdate"></div>
         </div>
       </router-link>
       <router-link to="/discord">
@@ -41,7 +42,8 @@ export default {
     return {}
   },
   computed: mapState({
-    needsInstallation: state => state.FileSystem.needsInstallation
+    needsInstallation: state => state.Executables.needsInstallation,
+    needsUpdate: state => state.Executables.needsUpdate
   })
 }
 </script>
@@ -79,6 +81,12 @@ export default {
     .button
       +clickable
       margin-left: 10px
+    .notification
+      margin-left: 10px
+      height: 10px
+      width: 10px
+      border-radius: 20px
+      background-color: #79a8ff
 
     &.disabled
       .icon

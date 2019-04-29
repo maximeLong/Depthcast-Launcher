@@ -1,14 +1,14 @@
 import Vue            from 'vue'
 import Vuex           from 'vuex'
 import modules        from './modules'
-import setupPaths     from './plugins/SetupPaths'
+import setupIO        from './plugins/SetupIO'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules,
   plugins: [
-    setupPaths
+    setupIO
   ],
   strict: process.env.NODE_ENV !== 'production'
 })

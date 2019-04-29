@@ -1,10 +1,10 @@
 <template>
   <div id="landing">
-    <div class="button-container" @click="launchDepthcast">
+    <div class="button-container" @click="launchDepthcast" disabled="depthcastIsOpen" :class="{open : depthcastIsOpen}">
       <div class="button-image main"><div class="icon"></div></div>
       <div class="text">Depthcast Designer</div>
     </div>
-    <div class="button-container" @click="launchImporter">
+    <div class="button-container" @click="launchImporter" disabled="importerIsOpen" :class="{open : importerIsOpen}">
       <div class="button-image model"><div class="icon"></div></div>
       <div class="text">Model Importer</div>
     </div>
@@ -17,7 +17,7 @@
 
 <script>
 import { remote } from 'electron'
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'landing',
@@ -28,6 +28,10 @@ export default {
   data() {
     return {}
   },
+  computed: mapState({
+    depthcastIsOpen:    state => state.Executables.depthcastIsOpen,
+    importerIsOpen:     state => state.Executables.importerIsOpen
+  }),
   methods: {
     ...mapActions([
       'launchDepthcast',
@@ -56,6 +60,8 @@ export default {
     +flexbox
     +flex-direction(column)
     +justify-content(center)
+    &.open
+      opacity: .25
     .button-image
       width: 100%
       height: 150px

@@ -11,7 +11,7 @@ export default new Router({
       component: require('@/views/Landing').default,
       beforeEnter: (to, from, next) => {
         //force the user to update page if installation is needed
-        store.state.FileSystem.needsInstallation ? next('/update') : next();
+        store.state.Executables.needsInstallation ? next('/update') : next();
       }
     },
     {

@@ -10,7 +10,6 @@
       </div>
       <div class="install-form" v-if="!showLoading">
         <div class="subtitle">Enter the key you received in your welcome email:</div>
-        <!-- <input :value="formEmail" @input="updateFormEmail" class="serial-key" placeholder="Your Email"> -->
         <input :value="formKey" @input="updateFormKey" class="serial-key" placeholder="Your serial key">
         <div class="submit-button" @click="submitForInstallation">Submit Key</div>
         <div class="error" v-if="downloadError">Error: {{downloadError}}</div>
@@ -23,9 +22,22 @@
     </div>
 
     <!-- handle updates -->
-    <div class="everything-is-good" v-if="!needsInstallation">
-      <div class="subtitle">You're completely up to date!</div>
-        <router-link to="/">Go to launcher</router-link>
+    <div class="post-installation" v-if="!needsInstallation">
+      <div class="updates" v-if="needsUpdate">
+        <div class="subtitle">Updates are available.</div>
+        <div class="title">{{latestVersion}}</div>
+        <div class="subtitle">Features</div>
+        <pre class="notes">{{latestVersionNotes}}</pre>
+        <div class="download-button" @click="tryDownloadUpdate" v-if="!updating">Download {{latestVersion}}</div>
+        <div class="download-status" v-if="updating">
+          <scale-loader :loading="updating" :color="'#c3c3c3'" :height="'13px'" :width="'3px'"></scale-loader>
+          <div>Downloading...</div>
+        </div>
+      </div>
+      <div class="no-updates" v-else>
+        <div class="subtitle">You're completely up to date!</div>
+          <router-link to="/">Go to launcher</router-link>
+      </div>
     </div>
 
   </div>
@@ -45,18 +57,22 @@ export default {
   },
   data() {
     return {
-      showLoading: false
+      showLoading:  false,
+      updating:     false
     }
   },
   components: {
     ScaleLoader
   },
   computed: mapState({
-    needsInstallation:  state => state.FileSystem.needsInstallation,
-    formEmail:          state => state.FileSystem.formEmail,
-    formKey:            state => state.FileSystem.formKey,
-    downloadStatus:     state => state.FileSystem.downloadStatus,
-    downloadError:      state => state.FileSystem.downloadError,
+    needsInstallation:  state => state.Executables.needsInstallation,
+    formKey:            state => state.Executables.formKey,
+    downloadStatus:     state => state.Executables.downloadStatus,
+    downloadError:      state => state.Executables.downloadError,
+    launcherVersion:    state => state.Executables.launcherVersion,
+    latestVersion:      state => state.Executables.latestVersion,
+    latestVersionNotes: state => state.Executables.latestVersionNotes,
+    needsUpdate:        state => state.Executables.needsUpdate,
   }),
   methods: {
     submitForInstallation() {
@@ -68,6 +84,14 @@ export default {
         this.showLoading = false;
       })
     },
+
+    tryDownloadUpdate() {
+      this.updating = true;
+      this.downloadUpdate().then(()=> {
+        this.updating = false;
+      })
+    },
+
     updateFormEmail(e) {
       this.$store.commit('UPDATE_FORM_EMAIL', e.target.value);
     },
@@ -75,7 +99,8 @@ export default {
       this.$store.commit('UPDATE_FORM_KEY', e.target.value);
     },
     ...mapActions([
-      'getExeAndUnpack'
+      'getExeAndUnpack',
+      'downloadUpdate'
     ])
   }
 
@@ -88,13 +113,16 @@ export default {
 #update
   width: 100%
   height: 100%
-  .installation
+  .installation,.post-installation
     width: 100%
     height: 100%
+    padding: 0 50px
     +flexbox
+
+  //installation form and loading
+  .installation
     +flex-direction(row)
     +align-items(center)
-    padding: 0 50px
     .info
       +flex(1)
       .title
@@ -109,7 +137,6 @@ export default {
         +button
       .error
         color: $action_color
-
     .loading
       width: 100%
       height: 100%
@@ -120,15 +147,45 @@ export default {
       .subtitle
         margin-bottom: 30px
 
-  .everything-is-good
-    width: 100%
-    height: 100%
-    +flexbox
+  //update info
+  .post-installation
     +flex-direction(column)
     +justify-content(center)
-    +align-items(center)
+    //+align-items(center)
+    .title
+      +headerText
+      margin-bottom: 30px
     .subtitle
       margin-bottom: 5px
+      &:first-of-type
+        margin-bottom: 0
+    .notes
+      max-height: 200px
+      overflow: auto
+    .download-button
+      +button
+      width: 200px
+      margin-top: 30px
+    .download-status
+      +button
+      width: 200px
+      margin-top: 30px
+      color: #d8d8d8
+      background-color: #444444
+      cursor: default
+      padding: 12px
+      +flexbox
+      +flex-direction(row)
+      +align-items(center)
+      +justify-content(space-around)
+      .v-spinner
+        margin: 0
+
+    .no-updates
+      +flexbox
+      +flex-direction(column)
+      +align-items(center)
+      +justify-content(center)
 
 
 </style>

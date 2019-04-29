@@ -1,34 +1,33 @@
-import { remote } from 'electron'
+import { remote, ipcRenderer } from 'electron'
 const child   = require('child_process').execFile;
-const homeDir = require('os').homedir();
 var extract   = require('extract-zip');
-
 var AdmZip    = require('adm-zip');
 var request   = require('request');
 
 
 const state = {
   needsInstallation:  false,
-  depthcastIsOpen:    false,
-  importerIsOpen:     false,
   depthcastPath:      undefined,
   importerPath:       undefined,
-  userEmail:          '',
+
+  depthcastIsOpen:    false,
+  importerIsOpen:     false,
+
   userName:           '',
   formKey:            '',
   downloadError:      '',
-  downloadStatus:     ''
+  downloadStatus:     '',
+
+  launcherVersion:    '0.0.0',
+  latestVersion:      '0.0.0',
+  latestVersionNotes: '',
+  needsUpdate:        false,
+  latestVersionDownloadUrl: ''
 }
 
 const mutations = {
   SET_NEEDS_INSTALLATION (state, val) {
     state.needsInstallation = val;
-  },
-  TOGGLE_DEPTHCAST_IS_OPEN (state, val) {
-    state.depthcastIsOpen = val;
-  },
-  TOGGLE_IMPORTER_IS_OPEN (state, val) {
-    state.importerIsOpen = val;
   },
   SET_DEPTHCAST_PATH (state, val) {
     state.depthcastPath = val;
@@ -36,9 +35,14 @@ const mutations = {
   SET_IMPORTER_PATH (state, val) {
     state.importerPath = val;
   },
-  UPDATE_USER_EMAIL (state, val) {
-    state.userEmail = val;
+
+  TOGGLE_DEPTHCAST_IS_OPEN (state, val) {
+    state.depthcastIsOpen = val;
   },
+  TOGGLE_IMPORTER_IS_OPEN (state, val) {
+    state.importerIsOpen = val;
+  },
+
   UPDATE_USER_NAME (state, val) {
     state.userName = val;
   },
@@ -50,36 +54,58 @@ const mutations = {
   },
   UPDATE_DOWNLOAD_STATUS (state, val) {
     state.downloadStatus = val;
+  },
+
+  SET_LAUNCHER_VERSION (state, val) {
+    state.launcherVersion = val;
+  },
+  SET_LATEST_VERSION (state, val) {
+    state.latestVersion = val;
+  },
+  SET_LATEST_VERSION_NOTES (state, val) {
+    state.latestVersionNotes = val;
+  },
+  SET_NEEDS_UPDATE (state, val) {
+    state.needsUpdate = val;
+  },
+  SET_LATEST_VERSION_DOWNLOAD_URL (state, val) {
+    state.latestVersionDownloadUrl = val;
   }
 }
 
 const actions = {
+  //launchers
+  //
   launchImporter({commit, state}) {
-    console.log(state.depthcastPath);
+    commit('TOGGLE_IMPORTER_IS_OPEN', true);
     child(state.depthcastPath, (err, data)=> {
       err ? console.log(err) : console.log(data.toString());
+      commit('TOGGLE_IMPORTER_IS_OPEN', false);
     });
   },
   launchDepthcast({commit, state}) {
+    commit('TOGGLE_DEPTHCAST_IS_OPEN', true);
     child(state.importerPath, (err, data)=> {
       err ? console.log(err) : console.log(data.toString());
+      commit('TOGGLE_DEPTHCAST_IS_OPEN', false);
     });
   },
 
+  // download and unpack flow
+  //
   getExeAndUnpack({commit, state}) {
     return new Promise((resolve, reject) => {
-
+      //retrieve download URL from server >> using key as input
       commit('UPDATE_DOWNLOAD_STATUS', 'Verifying Product Key...');
 
-      //retrieve download URL from server >> using key as input
-      var serverEndpoint = "https://us-central1-depthcast-designer.cloudfunctions.net/depthcastApi/getReleaseUrl";
+      var serverEndpoint = "https://us-central1-depthcast-designer.cloudfunctions.net/depthcastApi/getExeDownloadUrl";
       fetch(serverEndpoint, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({key: state.formKey, version: 'v1_01'})
+        body: JSON.stringify({key: state.formKey, version: state.launcherVersion})
       }).then((res)=> {
         if (!res.ok) {
           throw Error(res.statusText);
@@ -109,9 +135,53 @@ const actions = {
       });
 
     })
+  },
+
+  // check for updates
+  //
+  checkForUpdates({commit, state}) {
+    fetch("https://api.github.com/repos/maximeLong/Depthcast-Launcher/releases/latest").then((res)=> {
+      if (!res.ok) {
+        throw Error(res.statusText);
+      }
+      return res.json();
+    }).then((jsonRes)=> {
+      console.log(jsonRes);
+
+      commit('SET_LATEST_VERSION', jsonRes.tag_name);
+      commit('SET_LATEST_VERSION_NOTES', jsonRes.body);
+      commit('SET_LATEST_VERSION_DOWNLOAD_URL', jsonRes.assets[0].browser_download_url)
+
+      if (jsonRes.tag_name === 'v' + state.launcherVersion) {
+        commit('SET_NEEDS_UPDATE', false);
+      } else {
+        commit('SET_NEEDS_UPDATE', true);
+      }
+      //override
+      commit('SET_NEEDS_UPDATE', true);
+
+    }).catch((err)=> {
+      console.log("couldn't get version info, check internet connection..")
+      commit('SET_NEEDS_UPDATE', false);
+    })
+  },
+
+  // download new update
+  //
+  downloadUpdate({commit, state}) {
+    return new Promise((resolve, reject)=> {
+      //tell main to download
+      ipcRenderer.send('download-object', {url: state.latestVersionDownloadUrl});
+      //on finish resolve promise
+      ipcRenderer.on('download-success', (event, arg) => {
+        //shell.openItem(remote.app.getPath('downloads'))
+        resolve()
+      })
+    })
   }
 }
 
+// unzip helper
 const fetchAndExtract = function(downloadUrl) {
   return new Promise((resolve, reject)=> {
     request.get({url: downloadUrl, encoding: null}, (err, res, body) => {

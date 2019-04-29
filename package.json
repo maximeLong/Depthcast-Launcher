@@ -26,20 +26,8 @@
     "files": [
       "dist/electron/**/*"
     ],
-    "dmg": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
+    "nsis": {
+      "deleteAppDataOnUninstall": true
     },
     "win": {
       "icon": "build/icons/Depthcast-Logo.ico"
@@ -47,6 +35,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.4.13",
+    "electron-dl": "^1.14.0",
     "mkdirp": "^0.5.1",
     "request": "^2.88.0",
     "vue": "^2.3.3",
