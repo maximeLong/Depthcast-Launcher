@@ -13,6 +13,10 @@ const setupIO = store => {
     store.commit('SET_LAUNCHER_VERSION', remote.app.getVersion());
   }
 
+  console.log(remote.app.getPath('userData'));
+  console.log(localStorage);
+
+
   //check if we have localStorage items
   store.commit('UPDATE_FORM_KEY',   localStorage.getItem('key'));
   store.commit('UPDATE_USER_NAME',  localStorage.getItem('name'));
@@ -31,8 +35,7 @@ const setupIO = store => {
         store.commit('SET_NEEDS_INSTALLATION', true);
 
         //if key is present then we can assume that this is an update (installer deletes old Directory)
-        if (store.state.formKey) {
-          console.log(store.state.formKey);
+        if (localStorage.getItem('key')) {
           store.commit('SET_AUTO_INSTALL', true);
         }
     }

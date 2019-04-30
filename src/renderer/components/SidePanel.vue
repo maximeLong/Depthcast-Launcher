@@ -3,7 +3,7 @@
 
     <div class="logo-bar panel">
       <div class="icon logo"></div>
-      <div class="button">Depthcast</div>
+      <div class="button">Depthcast <span>{{launcherVersion}}</span></div>
     </div>
 
 
@@ -43,7 +43,8 @@ export default {
   },
   computed: mapState({
     needsInstallation: state => state.Executables.needsInstallation,
-    needsUpdate: state => state.Executables.needsUpdate
+    needsUpdate: state => state.Executables.needsUpdate,
+    launcherVersion: state => state.Executables.launcherVersion
   })
 }
 </script>
@@ -103,9 +104,15 @@ export default {
       height: 35px
       background-image: url('../assets/logo.svg')
     .button
+      cursor: default
       margin-left: 5px
       color: $text_color_white
       letter-spacing: .75px
+      span
+        margin-left: 5px
+        font-size: 13px
+        color: $text_color_grey
+
   .additional-panel
     margin-bottom: 20px
     a
