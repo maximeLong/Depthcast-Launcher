@@ -31,7 +31,8 @@ const setupIO = store => {
         store.commit('SET_NEEDS_INSTALLATION', true);
 
         //if key is present then we can assume that this is an update (installer deletes old Directory)
-        if (store.state.formKey !== null) {
+        if (store.state.formKey) {
+          console.log(store.state.formKey);
           store.commit('SET_AUTO_INSTALL', true);
         }
     }
