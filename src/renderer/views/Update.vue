@@ -52,6 +52,9 @@ import ScaleLoader from 'vue-spinner/src/ScaleLoader.vue'
 export default {
   name: 'update',
   mounted: function() {
+    if (this.autoInstall) {
+      this.submitForInstallation();
+    };
     remote.getCurrentWindow().setMinimumSize(1000, 570);
     remote.getCurrentWindow().setContentSize(1000, 570);
   },
@@ -66,6 +69,7 @@ export default {
   },
   computed: mapState({
     needsInstallation:  state => state.Executables.needsInstallation,
+    autoInstall:        state => state.Executables.autoInstall,
     formKey:            state => state.Executables.formKey,
     downloadStatus:     state => state.Executables.downloadStatus,
     downloadError:      state => state.Executables.downloadError,

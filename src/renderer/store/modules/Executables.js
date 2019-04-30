@@ -7,6 +7,7 @@ var request   = require('request');
 
 const state = {
   needsInstallation:  false,
+  autoInstall:        false,
   depthcastPath:      undefined,
   importerPath:       undefined,
 
@@ -28,6 +29,9 @@ const state = {
 const mutations = {
   SET_NEEDS_INSTALLATION (state, val) {
     state.needsInstallation = val;
+  },
+  SET_AUTO_INSTALL (state, val) {
+    state.autoInstall = val;
   },
   SET_DEPTHCAST_PATH (state, val) {
     state.depthcastPath = val;
