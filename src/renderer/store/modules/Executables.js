@@ -162,7 +162,7 @@ const actions = {
         commit('SET_NEEDS_UPDATE', true);
       }
       //override
-      commit('SET_NEEDS_UPDATE', true);
+      //commit('SET_NEEDS_UPDATE', true);
 
     }).catch((err)=> {
       console.log("couldn't get version info, check internet connection..")
