@@ -1,6 +1,6 @@
 # Depthcast-Launcher
 
-> Electron launcher and exe manager for Depthcast
+> Electron launcher and manager for Depthcast Designer and related apps
 
 ## Instructions
 
