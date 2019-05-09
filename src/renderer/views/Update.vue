@@ -84,6 +84,7 @@ export default {
       this.getExeAndUnpack().then(()=> {
         this.showLoading  = false;
         this.$store.commit('SET_NEEDS_INSTALLATION', false);
+        this.$store.commit('SET_AUTO_INSTALL', false);
       }).catch((err)=> {
         this.showLoading = false;
       })

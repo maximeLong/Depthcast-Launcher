@@ -22,12 +22,12 @@ const setupIO = store => {
   store.commit('UPDATE_USER_NAME',  localStorage.getItem('name'));
 
   //set the executable paths >> if this causes errors we can move this into installation flow
-  store.commit('SET_DEPTHCAST_PATH', remote.app.getPath('userData') + "\\Depthcast\\Depthcast.exe")
-  store.commit('SET_IMPORTER_PATH', remote.app.getPath('userData') + "\\Depthcast\\Depthcast.exe")
+  store.commit('SET_DEPTHCAST_PATH', remote.app.getPath('userData') + "\\Executables\\Designer\\Depthcast.exe")
+  store.commit('SET_IMPORTER_PATH', remote.app.getPath('userData') + "\\Executables\\Model_Importer\\Importer.exe")
 
   //check we need to start installation process
   try {
-    fs.statSync(remote.app.getPath('userData') + '\\Depthcast');
+    fs.statSync(remote.app.getPath('userData') + '\\Executables');
     store.commit('SET_NEEDS_INSTALLATION', false);
   } catch (err) {
     if (err.code === 'ENOENT') {

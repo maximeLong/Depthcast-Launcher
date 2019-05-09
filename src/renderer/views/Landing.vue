@@ -56,7 +56,6 @@ export default {
 
   .button-container
     width: 150px
-    height: 100%
     +flexbox
     +flex-direction(column)
     +justify-content(center)

@@ -82,14 +82,14 @@ const actions = {
   //
   launchImporter({commit, state}) {
     commit('TOGGLE_IMPORTER_IS_OPEN', true);
-    child(state.depthcastPath, (err, data)=> {
+    child(state.importerPath, (err, data)=> {
       err ? console.log(err) : console.log(data.toString());
       commit('TOGGLE_IMPORTER_IS_OPEN', false);
     });
   },
   launchDepthcast({commit, state}) {
     commit('TOGGLE_DEPTHCAST_IS_OPEN', true);
-    child(state.importerPath, (err, data)=> {
+    child(state.depthcastPath, (err, data)=> {
       err ? console.log(err) : console.log(data.toString());
       commit('TOGGLE_DEPTHCAST_IS_OPEN', false);
     });
@@ -124,13 +124,15 @@ const actions = {
         localStorage.setItem('email', jsonRes.email);
         localStorage.setItem('name', jsonRes.name);
 
-        fetchAndExtract(jsonRes.download_url).then(()=> {
-          //clear state and tell update component we are all good
-          commit('UPDATE_DOWNLOAD_ERROR', '');
-          resolve(); //success
-        }).catch((err)=> {
-            commit('UPDATE_DOWNLOAD_ERROR', 'Your key was correct, but we could not download your executables. Check your internet connection and try again.');
-            reject();
+        jsonRes.download_urls.forEach((data)=> {
+          fetchAndExtract(data.url, data.name).then(()=> {
+            //clear state and tell update component we are all good
+            commit('UPDATE_DOWNLOAD_ERROR', '');
+            resolve(); //success
+          }).catch((err)=> {
+              commit('UPDATE_DOWNLOAD_ERROR', 'Your key was correct, but we could not download your executables. Check your internet connection and try again.');
+              reject();
+          })
         })
       }).catch((err)=> {
         console.log('couldnt connect or verify key ', err);
@@ -186,14 +188,14 @@ const actions = {
 }
 
 // unzip helper
-const fetchAndExtract = function(downloadUrl) {
+const fetchAndExtract = function(downloadUrl, directoryName) {
   return new Promise((resolve, reject)=> {
     request.get({url: downloadUrl, encoding: null}, (err, res, body) => {
       if (!err) {
         var zip         = new AdmZip(body);
         var zipEntries  = zip.getEntries();
         console.log("unpacking " + zipEntries.length + " files to: " + remote.app.getPath('userData'));
-        zip.extractAllTo(remote.app.getPath('userData'), true);
+        zip.extractAllTo(remote.app.getPath('userData') + '/Executables/' + directoryName, true);
         resolve();
       } else {
         console.log("something went wrong with download: ", err);
