@@ -26,7 +26,7 @@ const state = {
   latestVersionDownloadUrl: '',
 
   isOnline: false,
-  toastMessage: 'You are offline. Updates are disabled.'
+  toastMessage: 'No network detected.'
 }
 
 const mutations = {
