@@ -68,6 +68,8 @@ export default {
     if (this.autoInstall) {
       this.submitForInstallation();
     };
+    //run update check every time this route is opened
+    this.checkForUpdates();
     remote.getCurrentWindow().setMinimumSize(1000, 570);
     remote.getCurrentWindow().setContentSize(1000, 570);
   },
@@ -119,7 +121,8 @@ export default {
     },
     ...mapActions([
       'getExeAndUnpack',
-      'downloadUpdate'
+      'downloadUpdate',
+      'checkForUpdates'
     ])
   }
 
