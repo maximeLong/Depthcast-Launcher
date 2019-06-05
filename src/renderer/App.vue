@@ -12,6 +12,8 @@
       <div id="view-container">
         <router-view></router-view>
       </div>
+
+      <toast></toast>
     </div>
 
   </div>
@@ -20,13 +22,15 @@
 <script>
   import HeaderPanel  from './components/HeaderPanel';
   import SidePanel    from './components/SidePanel';
+  import Toast        from './components/Toast';
 
   export default {
-    name: 'depthcast-native',
+    name: 'launcher-main',
     components: {
       HeaderPanel,
-      SidePanel
-    }
+      SidePanel,
+      Toast
+    },
   }
 </script>
 

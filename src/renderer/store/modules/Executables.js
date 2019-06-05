@@ -23,7 +23,10 @@ const state = {
   latestVersion:      '0.0.0',
   latestVersionNotes: '',
   needsUpdate:        false,
-  latestVersionDownloadUrl: ''
+  latestVersionDownloadUrl: '',
+
+  isOnline: false,
+  toastMessage: 'No network detected.'
 }
 
 const mutations = {
@@ -74,6 +77,10 @@ const mutations = {
   },
   SET_LATEST_VERSION_DOWNLOAD_URL (state, val) {
     state.latestVersionDownloadUrl = val;
+  },
+
+  SET_ONLINE_CONNECTION (state, val) {
+    state.isOnline = val;
   }
 }
 
@@ -143,6 +150,24 @@ const actions = {
     })
   },
 
+  // check for online connection
+  //
+  checkForOnlineConnection({commit, dispatch, state}) {
+    return new Promise((resolve, reject)=> {
+      //test current conditions
+      navigator.onLine ? commit('SET_ONLINE_CONNECTION', true) : commit('SET_ONLINE_CONNECTION', false);
+      //listeners for connection events
+      window.addEventListener('online',  ()=> { dispatch('onlineConnectionIsOn')} )
+      window.addEventListener('offline', ()=> { dispatch('onlineConnectionIsOff')} )
+    })
+  },
+  onlineConnectionIsOn({commit, state}) {
+    commit('SET_ONLINE_CONNECTION', true)
+  },
+  onlineConnectionIsOff({commit, state}) {
+    commit('SET_ONLINE_CONNECTION', false)
+  },
+
   // check for updates
   //
   checkForUpdates({commit, state}) {
@@ -152,8 +177,6 @@ const actions = {
       }
       return res.json();
     }).then((jsonRes)=> {
-      console.log(jsonRes);
-
       commit('SET_LATEST_VERSION', jsonRes.tag_name);
       commit('SET_LATEST_VERSION_NOTES', jsonRes.body);
       commit('SET_LATEST_VERSION_DOWNLOAD_URL', jsonRes.assets[0].browser_download_url)
@@ -163,9 +186,6 @@ const actions = {
       } else {
         commit('SET_NEEDS_UPDATE', true);
       }
-      //override
-      //commit('SET_NEEDS_UPDATE', true);
-
     }).catch((err)=> {
       console.log("couldn't get version info, check internet connection..")
       commit('SET_NEEDS_UPDATE', false);
