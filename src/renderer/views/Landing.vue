@@ -60,13 +60,39 @@ export default {
     +justify-content(center)
     &.open
       opacity: .25
-    &.dragged,&.success
+    &.dragged
       .button-image.vfx
         +transition(.25s ease all)
         border: 2px dashed $action_color
       .drop
         +transition(.25s ease all)
         color: $action_color
+    &.error
+      .button-image.vfx
+        +transition(.25s ease all)
+        border: 2px dashed #ff7171
+      .drop
+        +transition(.25s ease all)
+        color: #ff7171
+    &.success
+      +flexbox
+      +align-items(center)
+      +justify-content(center)
+      .button-image.vfx
+        border: 2px dashed $action_color
+
+    //root level has to have these rules so that animation works
+    .success-image
+      margin-bottom: 10px
+      background-image: url('../assets/success.svg')
+      width: auto
+      height: 30px
+      background-size: contain
+      background-position: 50% 50%
+      background-repeat: no-repeat
+    .success-message
+      text-align: center
+      color: $action_color
 
     .button-image
       width: 100%

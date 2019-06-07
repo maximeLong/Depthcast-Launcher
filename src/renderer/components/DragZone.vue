@@ -2,9 +2,12 @@
   <div class="button-container" id="dragzone" :class="{ dragged: dragged, error: mode == 'error', success: mode == 'success' }">
     <div class="button-image vfx">
       <transition name="fadeup" mode="out-in">
-        <div class="success"  v-if="mode == 'success'" key="success">something</div>
-        <div class="error"    v-if="mode == 'error'" key="error">{{errorMessage}}</div>
-        <div class="drop"     v-if="mode == 'default'" key="default">Drop assetbundle files</div>
+        <div class="drop success" v-if="mode == 'success'" key="s">
+          <div class="success-image"></div>
+          <div class="success-message">Successfully imported</div>
+        </div>
+        <div class="drop error"   v-if="mode == 'error'" key="e">{{errorMessage}}</div>
+        <div class="drop"         v-if="mode == 'default'" key="d">Drop assetbundle files</div>
       </transition>
     </div>
     <div class="text">Unity VFX Importer</div>
@@ -44,9 +47,13 @@ export default {
     holder.ondrop = (e)=> {
       this.parseDrop(e).then(()=> {
         this.mode = 'success';
+        clearTimeout(this.timer);
+        this.timer = setTimeout(()=>{ this.mode = 'default'; }, 5000);
       }).catch((err)=>{
         this.mode = 'error';
         this.errorMessage  = err
+        clearTimeout(this.timer);
+        this.timer = setTimeout(()=>{ this.mode = 'default'; }, 6000);
       });
       this.dragged = false;
       e.preventDefault();
@@ -59,15 +66,26 @@ export default {
       return new Promise((resolve, reject) => {
         let dropIsOk    = true;
         let filesToCopy = [];
+        let errorMessage;
         const documentsPath = remote.app.getPath('documents') + '\\Depthcast\\AssetBundles';
 
         for (let f of e.dataTransfer.files) {
           //assetbundles cant have extensions (assetbundles dont have extensions)
           //path cant be documentsPath (windows bug where file gets overwritten if copy is same path)
           //path cant be a folder (folders are always multiple of 4096)
-          if (f.type != "" || f.path.includes(documentsPath) || f.size%4096 == 0) {
+          if (f.type != "") {
             dropIsOk = false;
-          } else {
+            errorMessage = 'Invalid file type';
+          }
+          else if (f.path.includes(documentsPath)) {
+            dropIsOk = false;
+            errorMessage = "Can't drop from Depthcast directory";
+          }
+          else if (f.size%4096 == 0) {
+            dropIsOk = false;
+            errorMessage = "Can't include folder";
+          }
+          else {
             filesToCopy.push({name: f.name, path: f.path});
           }
         }
@@ -91,8 +109,8 @@ export default {
             }
           }
         } else {
-          //drop wasnt ok for above reasons -- give generic error
-          reject('Invalid file type')
+          //drop wasnt ok for above reasons
+          reject(errorMessage)
         }
       })
     }
