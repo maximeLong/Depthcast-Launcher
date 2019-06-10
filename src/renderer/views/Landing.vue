@@ -1,5 +1,6 @@
 <template>
   <div id="landing">
+    <!-- launchers -->
     <div class="button-container" @click="launchDepthcast" disabled="depthcastIsOpen" :class="{open : depthcastIsOpen}">
       <div class="button-image main"><div class="icon"></div></div>
       <div class="text">Depthcast Designer</div>
@@ -8,25 +9,23 @@
       <div class="button-image model"><div class="icon"></div></div>
       <div class="text">Model Importer</div>
     </div>
-    <div class="button-container">
-      <div class="button-image vfx"><div class="drop">Drop .assetbundle files</div></div>
-      <div class="text">Unity VFX Importer</div>
-    </div>
+    <!-- drag and drop container -->
+    <drag-zone></drag-zone>
   </div>
 </template>
 
 <script>
 import { remote } from 'electron'
 import { mapState, mapActions } from 'vuex'
-
+import DragZone from '@/components/DragZone'
 export default {
   name: 'landing',
   mounted: function() {
     remote.getCurrentWindow().setMinimumSize(1000, 570);
     remote.getCurrentWindow().setContentSize(1000, 570);
   },
-  data() {
-    return {}
+  components: {
+    DragZone
   },
   computed: mapState({
     depthcastIsOpen:    state => state.Executables.depthcastIsOpen,
@@ -61,6 +60,40 @@ export default {
     +justify-content(center)
     &.open
       opacity: .25
+    &.dragged
+      .button-image.vfx
+        +transition(.25s ease all)
+        border: 2px dashed $action_color
+      .drop
+        +transition(.25s ease all)
+        color: $action_color
+    &.error
+      .button-image.vfx
+        +transition(.25s ease all)
+        border: 2px dashed #ff7171
+      .drop
+        +transition(.25s ease all)
+        color: #ff7171
+    &.success
+      +flexbox
+      +align-items(center)
+      +justify-content(center)
+      .button-image.vfx
+        border: 2px dashed $action_color
+
+    //root level has to have these rules so that animation works
+    .success-image
+      margin-bottom: 10px
+      background-image: url('../assets/success.svg')
+      width: auto
+      height: 30px
+      background-size: contain
+      background-position: 50% 50%
+      background-repeat: no-repeat
+    .success-message
+      text-align: center
+      color: $action_color
+
     .button-image
       width: 100%
       height: 150px
@@ -76,9 +109,12 @@ export default {
         .icon
           background-image: url('../assets/Model_Front.png')
       &.vfx
+        +transition(.5s ease all)
+        cursor: default
         background: none
         border: 2px dashed $text_color_grey
         .drop
+          +transition(.5s ease all)
           padding: 0 20px
       .icon
         width: 80%

@@ -31,6 +31,11 @@
       SidePanel,
       Toast
     },
+    mounted: function() {
+      //prevent default drag behavior
+      document.addEventListener('dragover', event => event.preventDefault())
+      document.addEventListener('drop', event => event.preventDefault())
+    }
   }
 </script>
 
